@@ -1,65 +1,149 @@
-import Image from "next/image";
+'use client'
+
+import { useEffect, useState } from 'react'
+import { supabase } from '@/lib/supabase'
+import { Product, Category } from '@/types/product'
+import ProductCard from '@/components/ProductCard'
 
 export default function Home() {
+  const [products, setProducts] = useState<Product[]>([])
+  const [categories, setCategories] = useState<Category[]>([])
+  const [selectedCategory, setSelectedCategory] = useState<string>('All')
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    fetchData()
+  }, [])
+
+  async function fetchData() {
+    try {
+      setLoading(true)
+      setError(null)
+
+      // Fetch categories
+      const { data: categoriesData, error: categoriesError } = await supabase
+        .from('categories')
+        .select('*')
+
+      if (categoriesError) throw categoriesError
+      setCategories(categoriesData || [])
+
+      // Fetch products
+      const { data: productsData, error: productsError } = await supabase
+        .from('products')
+        .select('*')
+
+      if (productsError) throw productsError
+      setProducts(productsData || [])
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load data')
+      console.error('Error fetching data:', err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const filteredProducts =
+    selectedCategory === 'All'
+      ? products
+      : products.filter((p) => p.category === selectedCategory)
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 to-rose-100">
+      {/* Header */}
+      <header className="bg-white shadow">
+        <div className="max-w-7xl mx-auto px-4 py-6">
+          <h1 className="text-4xl font-bold text-pink-600">✨ Mariam Beauty</h1>
+          <p className="text-gray-600 mt-1">Premium Beauty & Skincare</p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </header>
+
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 py-8">
+        {/* Category Filter */}
+        <div className="mb-8">
+          <h2 className="text-xl font-bold mb-4">Categories</h2>
+          <div className="flex gap-2 flex-wrap">
+            <button
+              onClick={() => setSelectedCategory('All')}
+              className={`px-4 py-2 rounded-full transition ${
+                selectedCategory === 'All'
+                  ? 'bg-pink-600 text-white'
+                  : 'bg-white border border-gray-300 hover:border-pink-600'
+              }`}
+            >
+              All Products
+            </button>
+            {categories.map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => setSelectedCategory(cat.name)}
+                className={`px-4 py-2 rounded-full transition ${
+                  selectedCategory === cat.name
+                    ? 'bg-pink-600 text-white'
+                    : 'bg-white border border-gray-300 hover:border-pink-600'
+                }`}
+              >
+                {cat.name}
+              </button>
+            ))}
+          </div>
         </div>
+
+        {/* Error Message */}
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+            Error: {error}
+          </div>
+        )}
+
+        {/* Loading State */}
+        {loading && (
+          <div className="text-center py-12">
+            <p className="text-gray-600">Loading products...</p>
+          </div>
+        )}
+
+        {/* Products Grid */}
+        {!loading && (
+          <>
+            <p className="text-gray-600 mb-6">{filteredProducts.length} products found</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {filteredProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          </>
+        )}
       </main>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white mt-16">
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+            <div>
+              <h3 className="font-bold mb-3">About Mariam Beauty</h3>
+              <p className="text-gray-400 text-sm">Premium beauty and skincare products curated for you</p>
+            </div>
+            <div>
+              <h3 className="font-bold mb-3">Quick Links</h3>
+              <ul className="text-gray-400 text-sm space-y-1">
+                <li><a href="#" className="hover:text-white">Home</a></li>
+                <li><a href="#" className="hover:text-white">Products</a></li>
+                <li><a href="#" className="hover:text-white">Contact</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-bold mb-3">Contact</h3>
+              <p className="text-gray-400 text-sm">info@mariambeauty.com</p>
+            </div>
+          </div>
+          <div className="border-t border-gray-700 pt-6 text-center text-gray-400 text-sm">
+            <p>&copy; 2024 Mariam Beauty. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
     </div>
-  );
+  )
 }
