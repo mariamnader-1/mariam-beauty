@@ -13,60 +13,149 @@ export default function ProductCard({ product }: { product: Product }) {
     addToCart(product, quantity)
     setAdded(true)
     
-    // Show success animation
     setTimeout(() => setAdded(false), 2000)
   }
 
   return (
     <div className="card card-hover animate-fade-in">
-      <div className="relative w-full h-48 bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden">
+      <div style={{
+        position: 'relative',
+        width: '100%',
+        height: '12rem',
+        backgroundColor: '#e5e7eb',
+        overflow: 'hidden'
+      }}>
         <img
           src={product.image_url}
           alt={product.name}
-          className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            transition: 'transform 0.5s'
+          }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLImageElement).style.transform = 'scale(1.1)'
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLImageElement).style.transform = 'scale(1)'
+          }}
           onError={(e) => {
             e.currentTarget.src = 'https://via.placeholder.com/400x300?text=' + product.category
           }}
         />
-        <div className="absolute top-3 right-3">
-          <span className="badge badge-amber text-xs">
+        <div style={{
+          position: 'absolute',
+          top: '0.75rem',
+          right: '0.75rem'
+        }}>
+          <span className="badge badge-amber" style={{ fontSize: '0.75rem' }}>
             {product.category}
           </span>
         </div>
       </div>
       
-      <div className="p-5">
-        <h3 className="font-bold text-lg text-gray-900 mb-2 line-clamp-2">
+      <div style={{ padding: '1.25rem' }}>
+        <h3 style={{
+          fontWeight: 'bold',
+          fontSize: '1.125rem',
+          marginBottom: '0.5rem',
+          overflow: 'hidden',
+          display: '-webkit-box',
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: 'vertical'
+        }}>
           {product.name}
         </h3>
         
-        <p className="text-gray-600 text-sm mb-4 line-clamp-2 h-10">
+        <p style={{
+          color: '#4b5563',
+          fontSize: '0.875rem',
+          marginBottom: '1rem',
+          overflow: 'hidden',
+          display: '-webkit-box',
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: 'vertical',
+          height: '2.5rem'
+        }}>
           {product.description}
         </p>
         
-        <div className="flex items-baseline gap-2 mb-4">
-          <span className="text-3xl font-bold text-blue-900">
+        <div style={{
+          display: 'flex',
+          alignItems: 'baseline',
+          gap: '0.5rem',
+          marginBottom: '1rem'
+        }}>
+          <span style={{
+            fontSize: '1.875rem',
+            fontWeight: 'bold',
+            color: '#1e3a8a'
+          }}>
             ${product.price.toFixed(2)}
           </span>
           {product.stock < 10 && (
-            <span className="text-xs text-red-600 font-semibold">
+            <span style={{
+              fontSize: '0.75rem',
+              color: '#dc2626',
+              fontWeight: '600'
+            }}>
               Only {product.stock} left
             </span>
           )}
         </div>
 
-        <div className="space-y-3">
-          <div className="flex items-center gap-3 bg-gray-50 rounded-lg p-2">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.75rem',
+            backgroundColor: '#f3f4f6',
+            borderRadius: '0.5rem',
+            padding: '0.5rem'
+          }}>
             <button
               onClick={() => setQuantity(Math.max(1, quantity - 1))}
-              className="w-8 h-8 rounded bg-gray-200 hover:bg-gray-300 transition-colors"
+              style={{
+                width: '2rem',
+                height: '2rem',
+                borderRadius: '0.25rem',
+                backgroundColor: '#d1d5db',
+                border: 'none',
+                cursor: 'pointer',
+                transition: 'background-color 0.3s'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#9ca3af'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = '#d1d5db'
+              }}
             >
               −
             </button>
-            <span className="flex-1 text-center font-semibold">{quantity}</span>
+            <span style={{
+              flex: 1,
+              textAlign: 'center',
+              fontWeight: '600'
+            }}>{quantity}</span>
             <button
               onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
-              className="w-8 h-8 rounded bg-gray-200 hover:bg-gray-300 transition-colors"
+              style={{
+                width: '2rem',
+                height: '2rem',
+                borderRadius: '0.25rem',
+                backgroundColor: '#d1d5db',
+                border: 'none',
+                cursor: 'pointer',
+                transition: 'background-color 0.3s'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#9ca3af'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = '#d1d5db'
+              }}
             >
               +
             </button>
@@ -75,13 +164,22 @@ export default function ProductCard({ product }: { product: Product }) {
           <button
             onClick={handleAddToCart}
             disabled={product.stock === 0}
-            className={`w-full py-3 rounded-lg font-semibold transition-all duration-300 ${
-              added
-                ? 'bg-green-600 text-white scale-105'
+            style={{
+              width: '100%',
+              padding: '0.75rem',
+              borderRadius: '0.5rem',
+              fontWeight: '600',
+              border: 'none',
+              cursor: product.stock === 0 ? 'not-allowed' : 'pointer',
+              transition: 'all 0.3s',
+              backgroundColor: added
+                ? '#16a34a'
                 : product.stock === 0
-                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                : 'btn-primary'
-            }`}
+                ? '#d1d5db'
+                : '#1e3a8a',
+              color: 'white',
+              transform: added ? 'scale(1.05)' : 'scale(1)'
+            }}
           >
             {added ? '✓ Added to Cart' : product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
           </button>

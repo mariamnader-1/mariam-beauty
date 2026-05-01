@@ -18,7 +18,7 @@ body {
   color: #1f2937;
 }
 
-/* Smooth animations */
+/* Animations */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -77,19 +77,21 @@ body {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-/* Professional button styles */
+/* Buttons */
 .btn-primary {
-  background-color: #0f172a;
+  background-color: #1e3a8a;
   color: white;
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
   font-weight: 500;
+  border: none;
+  cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .btn-primary:hover {
-  background-color: #1e3a8a;
+  background-color: #1e40af;
   box-shadow: 0 10px 15px rgba(0, 0, 0, 0.15);
 }
 
@@ -97,13 +99,14 @@ body {
   transform: scale(0.95);
 }
 
-/* Secondary button */
 .btn-secondary {
   background-color: #d97706;
   color: white;
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
   font-weight: 500;
+  border: none;
+  cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
@@ -117,23 +120,22 @@ body {
   transform: scale(0.95);
 }
 
-/* Outline button */
 .btn-outline {
-  border: 2px solid #0f172a;
-  color: #0f172a;
+  border: 2px solid #1e3a8a;
+  color: #1e3a8a;
+  background-color: transparent;
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
   font-weight: 500;
+  cursor: pointer;
   transition: all 0.3s ease;
-  background-color: transparent;
 }
 
 .btn-outline:hover {
-  background-color: #0f172a;
+  background-color: #1e3a8a;
   color: white;
 }
 
-/* Card styles */
 .card {
   background-color: white;
   border-radius: 0.75rem;
@@ -142,32 +144,27 @@ body {
   border: 1px solid #f3f4f6;
 }
 
-.card-hover {
-  transition: all 0.3s ease;
-}
-
 .card-hover:hover {
   transform: scale(1.05);
   box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15);
 }
 
-/* Professional input */
 .input-field {
   width: 100%;
   padding: 0.5rem 1rem;
   border: 1px solid #d1d5db;
   border-radius: 0.5rem;
+  font-size: 1rem;
   transition: all 0.3s ease;
+  font-family: inherit;
 }
 
 .input-field:focus {
   outline: none;
-  ring: 2px;
-  border-color: transparent;
-  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1);
+  border-color: #1e3a8a;
+  box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
 }
 
-/* Badge */
 .badge {
   display: inline-block;
   padding: 0.25rem 0.75rem;
